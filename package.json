@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "author": "Ela Debichi",
-  "homepage": "https://morbidreams.github.io/play-jigsaw",
+  "homepage": "https://morbidreams.github.io/jigsaw",
   "type": "module",
   "scripts": {
     "dev": "vite",
