@@ -1,16 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { PuzzlePiece } from './components/PuzzlePiece';
-import { Toast } from './components/Toast';
-
-const PUZZLE_SIZE = 400;
+import React, { useState, useEffect } from "react";
+import { PuzzlePiece } from "./components/PuzzlePiece";
+import { Toast } from "./components/Toast";
+import { Puzzle } from "lucide-react";
+import { Grid3x3 } from "lucide-react";
+import { Info } from "lucide-react";
 
 function App() {
   const [pieces, setPieces] = useState<number[]>([]);
   const [draggedPiece, setDraggedPiece] = useState<number | null>(null);
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [gridSize, setGridSize] = useState({ rows: 3, cols: 3 });
+  const [puzzleSize, setPuzzleSize] = useState(() =>
+    window.innerWidth >= 768 ? 400 : 200
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setPuzzleSize(window.innerWidth >= 768 ? 400 : 200);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const fetchRandomImage = () => {
     setIsLoading(true);
@@ -51,14 +65,14 @@ function App() {
 
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
-    
+
     if (draggedPiece === null) return;
 
     const newPieces = [...pieces];
     const draggedPieceValue = newPieces[draggedPiece];
     newPieces[draggedPiece] = newPieces[dropIndex];
     newPieces[dropIndex] = draggedPieceValue;
-    
+
     setPieces(newPieces);
     setDraggedPiece(null);
 
@@ -79,21 +93,21 @@ function App() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
-      <div className="animate-spin">
-        <span className="material-icons text-3xl text-green-400">
-          extension
-        </span>
+        <div className="animate-spin">
+          <Puzzle className="text-green-400" size={48} />
+        </div>
       </div>
-    </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center justify-center">
+      <div className="mb-4 flex items-center justify-center text-gray-600 text-xs italic block md:hidden">
+        <Info size={10} className="mr-1 mt-0.5" />
+        <span>Drag the pieces to their correct positions.</span>
+      </div>
       <div className="mb-4 flex items-center gap-4">
-        <span className="material-icons text-gray-600">
-          grid_on
-        </span>
+        <Grid3x3 className="text-gray-600" size={20} />
         <select
           value={gridSize.rows}
           onChange={(e) => handleGridSizeChange(Number(e.target.value))}
@@ -105,12 +119,13 @@ function App() {
           <option value="5">5 x 5</option>
         </select>
       </div>
-      
-      <div 
+      <div
         className="grid gap-0.5 bg-gray-200 p-2 shadow-xl"
         style={{
-          gridTemplateColumns: `repeat(${gridSize.cols}, ${PUZZLE_SIZE/gridSize.cols}px)`,
-          width: PUZZLE_SIZE + 16,
+          gridTemplateColumns: `repeat(${gridSize.cols}, ${
+            puzzleSize / gridSize.cols
+          }px)`,
+          width: puzzleSize + 16,
         }}
       >
         {pieces.map((pieceId, index) => (
@@ -120,7 +135,7 @@ function App() {
             currentIndex={index}
             correctIndex={pieceId}
             imageUrl={imageUrl}
-            size={PUZZLE_SIZE}
+            size={puzzleSize}
             rows={gridSize.rows}
             cols={gridSize.cols}
             onDragStart={handleDragStart}
@@ -128,7 +143,6 @@ function App() {
           />
         ))}
       </div>
-
       <div className="mt-4 flex gap-4">
         <button
           onClick={initializePuzzle}
@@ -143,12 +157,22 @@ function App() {
           New
         </button>
       </div>
-
       <Toast
         message="🎉 Congratulations! You've completed the puzzle!"
         isVisible={showToast}
         onClose={() => setShowToast(false)}
       />
+      <footer className="w-full bottom-0 py-1 mt-9 text-center text-gray-500 text-sm">
+        Created by{" "}
+        <a
+          href="https://eladebichi.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gray-600 hover:underline"
+        >
+          Ela {"<3"}
+        </a>
+      </footer>
     </div>
   );
 }
