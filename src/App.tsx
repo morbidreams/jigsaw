@@ -101,7 +101,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col items-center justify-center">
       <div className="mb-4 flex items-center justify-center text-gray-600 text-xs italic block md:hidden">
         <Info size={10} className="mr-1 mt-0.5" />
         <span>Drag the pieces to their correct positions.</span>
@@ -120,12 +120,12 @@ function App() {
         </select>
       </div>
       <div
-        className="grid gap-0.5 bg-gray-200 p-2 shadow-xl"
+        className="grid gap-0.5 bg-gray-200 p-2"
         style={{
           gridTemplateColumns: `repeat(${gridSize.cols}, ${
             puzzleSize / gridSize.cols
           }px)`,
-          width: puzzleSize + 16,
+          width: puzzleSize + 19,
         }}
       >
         {pieces.map((pieceId, index) => (
@@ -157,11 +157,13 @@ function App() {
           New
         </button>
       </div>
-      <Toast
-        message="🎉 Congratulations! You've completed the puzzle!"
-        isVisible={showToast}
-        onClose={() => setShowToast(false)}
-      />
+      <div className="w-full flex justify-center">
+        <Toast
+          message="🎉 Congratulations! You've completed the puzzle!"
+          isVisible={true}
+          onClose={() => setShowToast(false)}
+        />
+      </div>
       <footer className="w-full bottom-0 py-1 mt-9 text-center text-gray-500 text-sm">
         Created by{" "}
         <a
